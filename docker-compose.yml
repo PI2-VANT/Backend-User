@@ -1,18 +1,25 @@
-version: '3.8'
+version: '3.3'
 
 services:
   db_backend_user:
     container_name: db_backend_user
     image: mongo:5.0.3
     restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: db_backend_user
     env_file: .env
+    command: mongod --port ${DB_PORT}
     ports:
-      - 27017:27017
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - ./mongo.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
   backend_user:
     build: .
     container_name: backend_user
     ports:
-      - 8080:3000
+      - ${APPLICATION_PORT}:3000
     env_file: .env
     volumes:
       - ./:/code
