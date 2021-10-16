@@ -8,7 +8,11 @@ export class UsersService {
   // constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
   constructor(private readonly userRepository: UserMongoRepository) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
+    const user = await this.userRepository.findByEmail(createUserDto.email);
+    if (user) {
+      throw new HttpException('Usuário já cadastrado', HttpStatus.BAD_REQUEST);
+    }
     return this.userRepository.create(createUserDto);
   }
 
