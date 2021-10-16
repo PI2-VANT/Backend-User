@@ -21,6 +21,11 @@ export class UserMongoRepository implements IUserRepository {
     return users;
   }
 
+  async findByEmail(email: string) {
+    const user = await this.userModel.findOne({ email });
+    return user;
+  }
+
   async findOne(id: string) {
     const user = await this.userModel.findById(id);
     return user;
